@@ -19,17 +19,17 @@ if ($conn->connect_error) {
 
 
 //插入评论
-function insert_review($bookid,$from_userid,$to_userid,$content)
+function insert_review($bookid,$from_userid,$from_userpet,$from_userimg,$to_reviewid,$content)
 {
 	$conn=connect_db();
-	$sql="INSERT INTO review (bookid,from_userid,to_userid,content)
-	VALUE('$bookid','$from_userid','$to_userid','$content')";
+	$sql="INSERT INTO review (bookid,from_userid,from_userpet,from_userimg,to_reviewid,content)
+	VALUE('$bookid','$from_userid','$from_userpet','$from_userimg','$to_reviewid','$content')";
 	mysqli_set_charset($conn, "utf8");
 	if ($conn->query($sql) === TRUE) {
     	//echo "sucess";
-    	return ture;
+    	return TRUE;
 	} else {
-    	//echo "Error: " . $sql . "<br>" . $conn->error;
+    	echo "Error: " . $sql . "<br>" . $conn->error;
     	return false;
 			}
 
@@ -41,7 +41,7 @@ function insert_review($bookid,$from_userid,$to_userid,$content)
 //获取某个用户发表的书评
 function get_byuserid($from_userid)
 {
-	$conn=$connect_db();
+	$conn=connect_db();
 	mysqli_set_charset($conn, "utf8");
 	$sql="select * from review WHERE from_userid='$from_userid'";
 	$result = $conn->query($sql);
@@ -52,15 +52,19 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $re[$i]['reviewid']=$row['id'];
         $re[$i]['bookid']=$row['bookid'];
-        $re[$i]['to_userid']=$row['to_userid'];
+        $re[$i]['to_reviewid']=$row['to_reviewid'];
         $re[$i]['content']=$row['content'];
         $i++;
          }
-         echo json_encode($re, JSON_UNESCAPED_UNICODE);
+         //echo json_encode($re, JSON_UNESCAPED_UNICODE);
+         $conn->close();
+         return $re;
 } else {
-    echo "null";
+    //echo "null";
+    $conn->close();
+    return false;
 }
-$conn->close();
+
 }
 
 
@@ -71,27 +75,31 @@ function get_bybookid($bookid,$page)
 	$end=$start+8;
 	$conn=connect_db();
 	mysqli_set_charset($conn, "utf8");
-	$sql="select * from review WHERE from_userid='$bookid' limit $start,8";
+	$sql="select * from review WHERE bookid='$bookid' limit $start,8";
 	$result = $conn->query($sql);
- 	echo $sql;
+ 	
 if ($result->num_rows > 0) {
     // 输出数据
     $i=0;
     while($row = $result->fetch_assoc()) {
         $re[$i]['reviewid']=$row['id'];
         $re[$i]['from_userid']=$row['from_userid'];
-        $re[$i]['to_userid']=$row['to_userid'];
+        $re[$i]['from_userpet']=$row['from_userpet'];
+        $re[$i]['from_userimg']=$row['from_userimg'];
+        $re[$i]['to_reviewid']=$row['to_reviewid'];
         $re[$i]['content']=$row['content'];
         $re[$i]['likeamount']=$row['likeamount'];
         $i++;
          }
         // echo json_encode($re, JSON_UNESCAPED_UNICODE);
+         $conn->close();
          return $re;
 } else {
     //echo "null";
+    $conn->close();
     return false;
 }
-$conn->close();
+
 }
 
 //给某一本书点赞 如果点过了就取消
@@ -127,9 +135,10 @@ function likeonebook($reviewid,$userid)
 		$sql="UPDATE review SET likeamount=likeamount-1
 	WHERE id=$reviewid;";
 	if ($conn->query($sql) === TRUE) {
-    	echo "unlikesucess";
+    	//echo "unlikesucess";
+    	return 2;
 	} else {
-    	echo "Error: " . $sql . "<br>" . $conn->error;
+    	return "Error: " . $sql . "<br>" . $conn->error;
 			}
 			
 	}else{
@@ -142,16 +151,17 @@ function likeonebook($reviewid,$userid)
 	if ($conn->query($sql) === TRUE) {
     	//echo "sucess";
 	} else {
-    	echo "Error: " . $sql . "<br>" . $conn->error;
+    	return "Error: " . $sql . "<br>" . $conn->error;
 			}
 
 	
 	$sql="UPDATE review SET likeamount=likeamount+1
 	WHERE id=$reviewid;";
 	if ($conn->query($sql) === TRUE) {
-    	echo "likesucess";
+    	//echo "likesucess";
+    	return 1;
 	} else {
-    	echo "Error: " . $sql . "<br>" . $conn->error;
+    	return "Error: " . $sql . "<br>" . $conn->error;
 			}
 	$conn->close();
 	}
@@ -167,7 +177,8 @@ function countreview($bookid)
 	$conn=connect_db();
 	$sql="select * from review WHERE bookid='$bookid'";
 	$result = $conn->query($sql);
- 	var_dump($result);
- 	echo mysqli_num_rows($result);
-$conn->close();
+ 	//var_dump($result);
+ 	
+    $conn->close();
+    return mysqli_num_rows($result);
 }

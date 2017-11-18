@@ -1,36 +1,32 @@
-﻿
-
-
-
-
-
-所有的请求方法用post
+﻿所有的请求方法用post
 1发布书评
-url: www.scuec.top/book/index.php/addreview
+url: www.scuec.top/bookreview/index.php/addreview
 参数：
 booid 书籍的id
 from_userid 发布书评的人
-to_userid 要回复的人
+from_userpet 发布书评的用户的昵称
+from_userimg 发布书评的用户的头像图片的url
+to_reviewid 要回复的书评的id
 content 要回复的内容
 
 2获得书籍的书评
-url:www.scuec.top/book/index.php/getbybook
+url:www.scuec.top/bookreview/index.php/getbybook
 参数：
 bookid 书籍的id
 page 要获取的页数
 
 3获取用户发表的书评
-url：www.scuec.top/book/index.php/getbyuser
+url：www.scuec.top/bookreview/index.php/getbyuser
 参数：
 userid 用户的id
 
 4给某个书评点赞 如果已经点了则取消
-url：www.scuec.top/book/index.php/likereview
+url：www.scuec.top/bookereview/index.php/likereview
 参数：
 reviewid 书评的id
 userid 该用户的id
 
 5获取某本书的书评数量
-url:www.scuec.top/book/index.php/reviewcount
+url:www.scuec.top/bookreview/index.php/reviewcount
 参数：
 bookid 书籍的id
