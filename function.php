@@ -29,7 +29,7 @@ function insert_review($bookid,$from_userid,$from_userpet,$from_userimg,$to_revi
     	//echo "sucess";
     	return TRUE;
 	} else {
-    	echo "Error: " . $sql . "<br>" . $conn->error;
+    	//echo "Error: " . $sql . "<br>" . $conn->error;
     	return false;
 			}
 
