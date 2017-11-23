@@ -27,11 +27,23 @@ function insert_review($bookid,$from_userid,$from_userpet,$from_userimg,$to_revi
 	mysqli_set_charset($conn, "utf8");
 	if ($conn->query($sql) === TRUE) {
     	//echo "sucess";
-    	return TRUE;
+    	//return TRUE;
 	} else {
-    	echo "Error: " . $sql . "<br>" . $conn->error;
+    	//echo "Error: " . $sql . "<br>" . $conn->error;
     	return false;
 			}
+
+	$sql="UPDATE review SET commentamount=commentamount+1
+	WHERE id=$to_viewid;";
+
+	if ($conn->query($sql) === TRUE) {
+    	//echo "sucess";
+    	return TRUE;
+	} else {
+    	//echo "Error: " . $sql . "<br>" . $conn->error;
+    	return false;
+			}
+
 
 	$conn->close();
 }
@@ -54,6 +66,9 @@ if ($result->num_rows > 0) {
         $re[$i]['bookid']=$row['bookid'];
         $re[$i]['to_reviewid']=$row['to_reviewid'];
         $re[$i]['content']=$row['content'];
+        $re[$i]['likeamount']=$row['likeamount'];
+        $re[$i]['commentamount']=$row['commentamount'];
+        $re[$i]['reg_date']=$row['reg_date'];
         $i++;
          }
          //echo json_encode($re, JSON_UNESCAPED_UNICODE);
@@ -89,6 +104,8 @@ if ($result->num_rows > 0) {
         $re[$i]['to_reviewid']=$row['to_reviewid'];
         $re[$i]['content']=$row['content'];
         $re[$i]['likeamount']=$row['likeamount'];
+        $re[$i]['commentamount']=$row['commentamount'];
+        $re[$i]['reg_date']=$row['reg_date'];
         $i++;
          }
         // echo json_encode($re, JSON_UNESCAPED_UNICODE);
@@ -130,7 +147,7 @@ function likeonebook($reviewid,$userid)
 	if ($conn->query($sql) === TRUE) {
     	//echo "sucess";
 	} else {
-    	echo "Error: " . $sql . "<br>" . $conn->error;
+    	//echo "Error: " . $sql . "<br>" . $conn->error;
 			}
 		$sql="UPDATE review SET likeamount=likeamount-1
 	WHERE id=$reviewid;";

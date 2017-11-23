@@ -26,6 +26,7 @@ switch ($arr[2]){
 			$re['code']=200;
 			$re['tip']='获取成功';
 		}else{
+			$re['list']=0;
 			$re['code']=500;
 			$re['tip']="没有数据(或数据库操作失败)";
 		}
@@ -41,9 +42,11 @@ switch ($arr[2]){
 		$re['list']=get_byuserid($userid);
 		
 		if($re['list']){
+
 			$re['code']=200;
 			$re['tip']='获取成功';
 		}else{
+			$re['list']=0;
 			$re['code']=500;
 			$re['tip']="没有数据(或数据库操作失败)";
 		}

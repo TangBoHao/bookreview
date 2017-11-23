@@ -33,10 +33,11 @@ id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 bookid VARCHAR(30) NOT NULL,
 from_userid VARCHAR(30) NOT NULL,
 from_userpet VARCHAR(30) NOT NULL,
-from_userimg VARCHAR(30) NOT NULL,
+from_userimg VARCHAR(600) NOT NULL,
 to_reviewid VARCHAR(30) NOT NULL default 0,
 content VARCHAR(5000) NOT NULL,
 likeamount INT NOT NULL default 0,
+commentamount INT NOT NULL default 0,
 likepeople VARCHAR(3000) NOT NULL,
 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 )default charset=utf8";
