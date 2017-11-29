@@ -26,7 +26,25 @@ switch ($arr[2]){
 			$re['code']=200;
 			$re['tip']='获取成功';
 		}else{
-			$re['list']=0;
+			$re['list']=[];
+			$re['code']=500;
+			$re['tip']="没有数据(或数据库操作失败)";
+		}
+		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
+		echo $re;
+		break;
+	case 'getbyreview':
+		if(!($_POST['reviewid'])){
+			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);
+			break;
+		}
+		$reviewid=$_POST['reviewid'];
+		$re['list']=get_byreviewid($reviewid);
+		if($re['list']){
+			$re['code']=200;
+			$re['tip']='获取成功';
+		}else{
+			$re['list']=[];
 			$re['code']=500;
 			$re['tip']="没有数据(或数据库操作失败)";
 		}
@@ -46,7 +64,7 @@ switch ($arr[2]){
 			$re['code']=200;
 			$re['tip']='获取成功';
 		}else{
-			$re['list']=0;
+			$re['list']=[];
 			$re['code']=500;
 			$re['tip']="没有数据(或数据库操作失败)";
 		}
@@ -59,12 +77,15 @@ switch ($arr[2]){
 			break;
 		}
 		$bookid=$_POST['bookid'];
+		$bookname=$_POST['bookname'];
+		$bookauthor=$_POST['bookauthor'];
+		$bookpicurl=$_POST['bookpicurl'];
 		$from_userid=$_POST['from_userid'];
 		$from_userpet=$_POST['from_userpet'];
 		$to_reviewid=$_POST['to_reviewid'];
 		$content=$_POST['content'];
 		$from_userimg=$_POST['from_userimg'];
-		if(insert_review($bookid,$from_userid,$from_userpet,$from_userimg,$to_reviewid,$content)){
+		if(insert_review($bookid,$bookname,$bookauthor,$bookpicurl,$from_userid,$from_userpet,$from_userimg,$to_reviewid,$content)){
 			$re['code']=200;
 			$re['tip']="数据插入成功";
 		

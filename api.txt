@@ -2,7 +2,10 @@
 1发布书评
 url: www.scuec.top/bookreview/index.php/addreview
 参数：
-booid 书籍的id
+bookid 书籍的id
+bookname 书名
+bookauthor 书籍的作者
+bookpicurl 书籍封面图片的url
 from_userid 发布书评的人
 from_userpet 发布书评的用户的昵称
 from_userimg 发布书评的用户的头像图片的url
@@ -19,6 +22,11 @@ page 要获取的页数
 url：www.scuec.top/bookreview/index.php/getbyuser
 参数：
 userid 用户的id
+
+4获取某条书评的评论
+url：www.scuec.top/bookreview/index.php/getbyreview
+参数：
+reviewid 书评的id
 
 4给某个书评点赞 如果已经点了则取消
 url：www.scuec.top/bookereview/index.php/likereview

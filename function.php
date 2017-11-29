@@ -19,11 +19,11 @@ if ($conn->connect_error) {
 
 
 //插入评论
-function insert_review($bookid,$from_userid,$from_userpet,$from_userimg,$to_reviewid,$content)
+function insert_review($bookid,$bookname,$bookauthor,$bookpicurl,$from_userid,$from_userpet,$from_userimg,$to_reviewid,$content)
 {
 	$conn=connect_db();
-	$sql="INSERT INTO review (bookid,from_userid,from_userpet,from_userimg,to_reviewid,content)
-	VALUE('$bookid','$from_userid','$from_userpet','$from_userimg','$to_reviewid','$content')";
+	$sql="INSERT INTO review (bookid,bookname,bookauthor,bookpicurl,from_userid,from_userpet,from_userimg,to_reviewid,content)
+	VALUE('$bookid','$bookname','$bookauthor','$bookpicurl','$from_userid','$from_userpet','$from_userimg','$to_reviewid','$content')";
 	mysqli_set_charset($conn, "utf8");
 	if ($conn->query($sql) === TRUE) {
     	//echo "sucess";
@@ -34,7 +34,7 @@ function insert_review($bookid,$from_userid,$from_userpet,$from_userimg,$to_revi
 			}
 
 	$sql="UPDATE review SET commentamount=commentamount+1
-	WHERE id=$to_viewid;";
+	WHERE id=$to_reviewid;";
 
 	if ($conn->query($sql) === TRUE) {
     	//echo "sucess";
@@ -62,9 +62,49 @@ if ($result->num_rows > 0) {
     // 输出数据
     $i=0;
     while($row = $result->fetch_assoc()) {
+    	
+    		$re[$i]['reviewid']=$row['id'];
+       		$re[$i]['bookid']=$row['bookid'];
+        	$re[$i]['bookname']=$row['bookname'];
+        	$re[$i]['bookauthor']=$row['bookauthor'];
+        	$re[$i]['bookpicurl']=$row['bookpicurl'];
+        	$re[$i]['to_reviewid']=$row['to_reviewid'];
+        	$re[$i]['content']=$row['content'];
+        	$re[$i]['likeamount']=$row['likeamount'];
+        	$re[$i]['commentamount']=$row['commentamount'];
+        	$re[$i]['reg_date']=$row['reg_date'];
+        	$i++;
+    	
+        
+         }
+         //echo json_encode($re, JSON_UNESCAPED_UNICODE);
+         $conn->close();
+         return $re;
+} else {
+    //echo "null";
+    $conn->close();
+    return false;
+}
+
+}
+
+//获取某个书评的评论
+function get_byreviewid($to_reviewid)
+{
+	$conn=connect_db();
+	mysqli_set_charset($conn, "utf8");
+	$sql="select * from review WHERE to_reviewid='$to_reviewid'";
+	$result = $conn->query($sql);
+ 
+if ($result->num_rows > 0) {
+    // 输出数据
+    $i=0;
+    while($row = $result->fetch_assoc()) {
+    	$re[$i]['bookid']=$row['bookid'];
         $re[$i]['reviewid']=$row['id'];
-        $re[$i]['bookid']=$row['bookid'];
-        $re[$i]['to_reviewid']=$row['to_reviewid'];
+        $re[$i]['from_userid']=$row['from_userid'];
+        $re[$i]['from_userpet']=$row['from_userpet'];
+        $re[$i]['from_userimg']=$row['from_userimg'];       
         $re[$i]['content']=$row['content'];
         $re[$i]['likeamount']=$row['likeamount'];
         $re[$i]['commentamount']=$row['commentamount'];
@@ -81,8 +121,6 @@ if ($result->num_rows > 0) {
 }
 
 }
-
-
 //根据书籍的id获取特定页数书评
 function get_bybookid($bookid,$page)
 {
@@ -97,7 +135,8 @@ if ($result->num_rows > 0) {
     // 输出数据
     $i=0;
     while($row = $result->fetch_assoc()) {
-        $re[$i]['reviewid']=$row['id'];
+    	if($row['to_reviewid']==0){
+    		  $re[$i]['reviewid']=$row['id'];
         $re[$i]['from_userid']=$row['from_userid'];
         $re[$i]['from_userpet']=$row['from_userpet'];
         $re[$i]['from_userimg']=$row['from_userimg'];
@@ -107,6 +146,8 @@ if ($result->num_rows > 0) {
         $re[$i]['commentamount']=$row['commentamount'];
         $re[$i]['reg_date']=$row['reg_date'];
         $i++;
+    	}
+      
          }
         // echo json_encode($re, JSON_UNESCAPED_UNICODE);
          $conn->close();
@@ -192,7 +233,7 @@ function likeonebook($reviewid,$userid)
 function countreview($bookid)
 {
 	$conn=connect_db();
-	$sql="select * from review WHERE bookid='$bookid'";
+	$sql="select * from review WHERE bookid='$bookid' and to_reviewid=0";
 	$result = $conn->query($sql);
  	//var_dump($result);
  	

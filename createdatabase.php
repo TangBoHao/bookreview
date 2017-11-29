@@ -31,6 +31,9 @@ if ($conn->connect_error) {
 $sql = "CREATE TABLE review (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
 bookid VARCHAR(30) NOT NULL,
+bookname VARCHAR(30) NOT NULL,
+bookauthor VARCHAR(30) NOT NULL,
+bookpicurl VARCHAR(600) NOT NULL,
 from_userid VARCHAR(30) NOT NULL,
 from_userpet VARCHAR(30) NOT NULL,
 from_userimg VARCHAR(600) NOT NULL,
@@ -39,7 +42,7 @@ content VARCHAR(5000) NOT NULL,
 likeamount INT NOT NULL default 0,
 commentamount INT NOT NULL default 0,
 likepeople VARCHAR(3000) NOT NULL,
-reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )default charset=utf8";
 
 if ($conn->query($sql) === TRUE) {
@@ -47,6 +50,16 @@ if ($conn->query($sql) === TRUE) {
 } else {
     echo "创建数据表错误: " . $conn->error;
 }
+
+
+// // 因为书评的默认to_reviewid为0 所以让id从1开始自增
+// $sql = "ALTER TABLE review SET AUTO_INCREMENT=1;";
+
+// if ($conn->query($sql) === TRUE) {
+//     echo "Table review seted successfully";
+// } else {
+//     echo "创建数据表错误: " . $conn->error;
+// }
 
 
 $conn->close();
