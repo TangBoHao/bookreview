@@ -15,13 +15,18 @@ $nodata=array(
 //根据截取的url关键字来调用对应功能
 switch ($arr[2]){
 	case 'getbybook':
-		if(!($_POST['bookid']&&$_POST['page'])){
+		if(!($_POST['bookid'])){
 			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);
 			break;
 		}
 		$bookid=$_POST['bookid'];
-		$page=$_POST['page'];
-		$re['list']=get_bybookid($bookid,$page);
+		if(!$_POST['page']){
+			$page=0;
+		}else{
+			$page=$_POST['page'];
+		}
+		
+		$re['list']=get_bybookid($bookid);
 		if($re['list']){
 			$re['code']=200;
 			$re['tip']='获取成功';
@@ -30,18 +35,35 @@ switch ($arr[2]){
 			$re['code']=500;
 			$re['tip']="没有数据(或数据库操作失败)";
 		}
+
+		for($i=0;$i<8;$i++)
+		{
+			
+			if(!$re['list'][$page*8+$i])
+			{
+				break;
+			}
+			$res[$i]=$re['list'][$page*8+$i];
+		}
+		
+		$re['list']=$res;
 		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
 		echo $re;
 		break;
 
 	case 'getbybookbyhot':
-		if(!($_POST['bookid']&&$_POST['page'])){
+		if(!($_POST['bookid'])){
 			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);
 			break;
 		}
 		$bookid=$_POST['bookid'];
-		$page=$_POST['page'];
-		$re['list']=get_bybookid($bookid,$page);
+		if(!$_POST['page']){
+			$page=0;
+		}else{
+			$page=$_POST['page'];
+		}
+		
+		$re['list']=get_bybookidbyhot($bookid);
 		if($re['list']){
 			$re['code']=200;
 			$re['tip']='获取成功';
@@ -50,9 +72,23 @@ switch ($arr[2]){
 			$re['code']=500;
 			$re['tip']="没有数据(或数据库操作失败)";
 		}
+
+		for($i=0;$i<8;$i++)
+		{
+			
+			if(!$re['list'][$page*8+$i])
+			{
+				break;
+			}
+			$res[$i]=$re['list'][$page*8+$i];
+		}
+		
+		$re['list']=$res;
 		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
 		echo $re;
 		break;
+
+
 	case 'getbyreview':
 		if(!($_POST['reviewid'])){
 			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);

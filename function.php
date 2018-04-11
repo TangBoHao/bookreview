@@ -122,13 +122,12 @@ if ($result->num_rows > 0) {
 
 }
 //根据书籍的id获取特定页数书评
-function get_bybookid($bookid,$page)
+function get_bybookid($bookid)
 {
-	$start=($page-1)*8;
-	$end=$start+8;
+	
 	$conn=connect_db();
 	mysqli_set_charset($conn, "utf8");
-	$sql="select * from review WHERE bookid='$bookid'  ORDER BY reg_date DESC limit $start,8";
+	$sql="select * from review WHERE bookid='$bookid'  ORDER BY reg_date DESC ";
 	$result = $conn->query($sql);
  	
 if ($result->num_rows > 0) {
@@ -164,11 +163,10 @@ if ($result->num_rows > 0) {
 //根据书籍的id获取特定页数书评并按热度排序
 function get_bybookidbyhot($bookid,$page)
 {
-    $start=($page-1)*8;
-    $end=$start+8;
+   
     $conn=connect_db();
     mysqli_set_charset($conn, "utf8");
-    $sql="select * from review WHERE bookid='$bookid'  ORDER BY likeamount DESC limit $start,8";
+    $sql="select * from review WHERE bookid='$bookid'  ORDER BY likeamount DESC ";
     $result = $conn->query($sql);
     
 if ($result->num_rows > 0) {
@@ -198,7 +196,6 @@ if ($result->num_rows > 0) {
     $conn->close();
     return false;
 }
-
 }
 
 //判断一个书评是否点过赞
