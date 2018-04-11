@@ -38,3 +38,11 @@ userid 该用户的id
 url:www.scuec.top/bookreview/index.php/reviewcount
 参数：
 bookid 书籍的id
+
+6判断某个用户是否给某个书评点赞了
+url:www.scuec.top/bookreview/index.php/islike
+参数：
+reviewid 书评的id
+userid 用户的id
+返回：status 0 没有点赞
+			 1 点了赞

@@ -55,7 +55,7 @@ function get_byuserid($from_userid)
 {
 	$conn=connect_db();
 	mysqli_set_charset($conn, "utf8");
-	$sql="select * from review WHERE from_userid='$from_userid'";
+	$sql="select * from review WHERE from_userid='$from_userid' ORDER BY reg_date DESC";
 	$result = $conn->query($sql);
  
 if ($result->num_rows > 0) {
@@ -93,7 +93,7 @@ function get_byreviewid($to_reviewid)
 {
 	$conn=connect_db();
 	mysqli_set_charset($conn, "utf8");
-	$sql="select * from review WHERE to_reviewid='$to_reviewid'";
+	$sql="select * from review WHERE to_reviewid='$to_reviewid' ORDER BY reg_date DESC";
 	$result = $conn->query($sql);
  
 if ($result->num_rows > 0) {
@@ -128,7 +128,7 @@ function get_bybookid($bookid,$page)
 	$end=$start+8;
 	$conn=connect_db();
 	mysqli_set_charset($conn, "utf8");
-	$sql="select * from review WHERE bookid='$bookid' limit $start,8";
+	$sql="select * from review WHERE bookid='$bookid'  ORDER BY reg_date DESC limit $start,8";
 	$result = $conn->query($sql);
  	
 if ($result->num_rows > 0) {
@@ -151,6 +151,7 @@ if ($result->num_rows > 0) {
          }
         // echo json_encode($re, JSON_UNESCAPED_UNICODE);
          $conn->close();
+         echo $conn->error;
          return $re;
 } else {
     //echo "null";
@@ -160,8 +161,8 @@ if ($result->num_rows > 0) {
 
 }
 
-//给某一本书点赞 如果点过了就取消
-function likeonebook($reviewid,$userid)
+//判断一个书评是否点过赞
+function islike($reviewid,$userid)
 {
 	$conn=connect_db();
 	$sql = "SELECT * FROM review WHERE id=$reviewid";
@@ -179,54 +180,86 @@ function likeonebook($reviewid,$userid)
    		$people=$re;
 		}
 	if($people["$userid"]){  //判断 用户是否点过赞
-		$people["$userid"]=0;
-		$people=json_encode($people,JSON_UNESCAPED_UNICODE);
-	$sql="UPDATE review SET likepeople='$people' 
-	WHERE id=$reviewid;
-	";
-	
-	if ($conn->query($sql) === TRUE) {
-    	//echo "sucess";
-	} else {
-    	//echo "Error: " . $sql . "<br>" . $conn->error;
-			}
-		$sql="UPDATE review SET likeamount=likeamount-1
-	WHERE id=$reviewid;";
-	if ($conn->query($sql) === TRUE) {
-    	//echo "unlikesucess";
+		
     	return 2;
-	} else {
-    	return "Error: " . $sql . "<br>" . $conn->error;
-			}
-			
-	}else{
-		$people["$userid"]=1;
-		$people=json_encode($people,JSON_UNESCAPED_UNICODE);
-	$sql="UPDATE review SET likepeople='$people' 
-	WHERE id=$reviewid;
-	";
+	} else{
 	
-	if ($conn->query($sql) === TRUE) {
-    	//echo "sucess";
-	} else {
-    	return "Error: " . $sql . "<br>" . $conn->error;
-			}
 
-	
-	$sql="UPDATE review SET likeamount=likeamount+1
-	WHERE id=$reviewid;";
-	if ($conn->query($sql) === TRUE) {
-    	//echo "likesucess";
     	return 1;
-	} else {
-    	return "Error: " . $sql . "<br>" . $conn->error;
-			}
+	
 	$conn->close();
 	}
 
 	
 
 }
+
+
+//给某一本书点赞 如果点过了就取消
+function likeonebook($reviewid,$userid)
+{
+    $conn=connect_db();
+    $sql = "SELECT * FROM review WHERE id=$reviewid";
+    $count=0;
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+    // 输出每行数据
+    while($row = $result->fetch_assoc()) {
+        $data=$row['likepeople'];
+        $people= json_decode($data,1);
+        
+        }
+        } else {
+        $re=array();
+        $people=$re;
+        }
+    if($people["$userid"]){  //判断 用户是否点过赞
+        $people["$userid"]=0;
+        $people=json_encode($people,JSON_UNESCAPED_UNICODE);
+    $sql="UPDATE review SET likepeople='$people' 
+    WHERE id=$reviewid;
+    ";
+    
+    if ($conn->query($sql) === TRUE) {
+        //echo "sucess";
+    } else {
+        //echo "Error: " . $sql . "<br>" . $conn->error;
+            }
+        $sql="UPDATE review SET likeamount=likeamount-1
+    WHERE id=$reviewid;";
+    if ($conn->query($sql) === TRUE) {
+        //echo "unlikesucess";
+        return 2;
+    } else {
+        return "Error: " . $sql . "<br>" . $conn->error;
+            }
+            
+    }else{
+        $people["$userid"]=1;
+        $people=json_encode($people,JSON_UNESCAPED_UNICODE);
+    $sql="UPDATE review SET likepeople='$people' 
+    WHERE id=$reviewid;
+    ";
+    
+    if ($conn->query($sql) === TRUE) {
+        //echo "sucess";
+    } else {
+        return "Error: " . $sql . "<br>" . $conn->error;
+            }
+    
+    $sql="UPDATE review SET likeamount=likeamount+1
+    WHERE id=$reviewid;";
+    if ($conn->query($sql) === TRUE) {
+        //echo "likesucess";
+        return 1;
+    } else {
+        return "Error: " . $sql . "<br>" . $conn->error;
+            }
+    $conn->close();
+    }
+    
+}
+
 
 
 //统计某本书的评论量

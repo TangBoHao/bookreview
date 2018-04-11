@@ -120,6 +120,33 @@ switch ($arr[2]){
 		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
 		echo $re;
 		break;
+
+//判断某用户是否给某书评点赞了
+	case 'islike':
+	if(!($_POST['reviewid']&&$_POST['userid'])){
+			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);
+			break;
+		}
+		$reviewid=$_POST['reviewid'];
+		$userid=$_POST['userid'];
+		$re['status']=islike($reviewid,$userid);
+		if($re['status']==1)
+		{
+			$re['code']=200;
+			$re['tip']='没有点赞';
+			$re['status']=0;
+		}elseif($re['status']==2){
+			$re['code']=200;
+			$re['tip']='点了赞';
+			$re['status']=1;
+		}else{
+			$re['code']=500;
+			$re['tip']='数据库操作错误';
+		}
+		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
+		echo $re;
+		break;
+
 	case 'reviewcount':
 	if(!($_POST['bookid'])){
 			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);
