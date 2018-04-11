@@ -33,6 +33,26 @@ switch ($arr[2]){
 		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
 		echo $re;
 		break;
+
+	case 'getbybookbyhot':
+		if(!($_POST['bookid']&&$_POST['page'])){
+			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);
+			break;
+		}
+		$bookid=$_POST['bookid'];
+		$page=$_POST['page'];
+		$re['list']=get_bybookid($bookid,$page);
+		if($re['list']){
+			$re['code']=200;
+			$re['tip']='获取成功';
+		}else{
+			$re['list']=[];
+			$re['code']=500;
+			$re['tip']="没有数据(或数据库操作失败)";
+		}
+		$re=json_encode($re,JSON_UNESCAPED_UNICODE);
+		echo $re;
+		break;
 	case 'getbyreview':
 		if(!($_POST['reviewid'])){
 			echo json_encode($nodata,JSON_UNESCAPED_UNICODE);

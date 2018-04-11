@@ -18,6 +18,12 @@ url:www.scuec.top/bookreview/index.php/getbybook
 bookid 书籍的id
 page 要获取的页数
 
+2获得书籍的书评并按热度排序
+url:www.scuec.top/bookreview/index.php/getbybookbyhot
+参数：
+bookid 书籍的id
+page 要获取的页数
+
 3获取用户发表的书评
 url：www.scuec.top/bookreview/index.php/getbyuser
 参数：

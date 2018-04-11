@@ -6,7 +6,7 @@ $servername = "localhost";
 $username = "root";
 $password = "123456";
 $dbname="book";
-//error_reporting(0); //关闭所有的错误提示
+error_reporting(0); //关闭所有的错误提示
 //error_reporting(E_ALL); //显示出所有的错误提示
 
 

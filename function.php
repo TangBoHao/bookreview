@@ -161,6 +161,46 @@ if ($result->num_rows > 0) {
 
 }
 
+//根据书籍的id获取特定页数书评并按热度排序
+function get_bybookidbyhot($bookid,$page)
+{
+    $start=($page-1)*8;
+    $end=$start+8;
+    $conn=connect_db();
+    mysqli_set_charset($conn, "utf8");
+    $sql="select * from review WHERE bookid='$bookid'  ORDER BY likeamount DESC limit $start,8";
+    $result = $conn->query($sql);
+    
+if ($result->num_rows > 0) {
+    // 输出数据
+    $i=0;
+    while($row = $result->fetch_assoc()) {
+        if($row['to_reviewid']==0){
+              $re[$i]['reviewid']=$row['id'];
+        $re[$i]['from_userid']=$row['from_userid'];
+        $re[$i]['from_userpet']=$row['from_userpet'];
+        $re[$i]['from_userimg']=$row['from_userimg'];
+        $re[$i]['to_reviewid']=$row['to_reviewid'];
+        $re[$i]['content']=$row['content'];
+        $re[$i]['likeamount']=$row['likeamount'];
+        $re[$i]['commentamount']=$row['commentamount'];
+        $re[$i]['reg_date']=$row['reg_date'];
+        $i++;
+        }
+      
+         }
+        // echo json_encode($re, JSON_UNESCAPED_UNICODE);
+         $conn->close();
+         echo $conn->error;
+         return $re;
+} else {
+    //echo "null";
+    $conn->close();
+    return false;
+}
+
+}
+
 //判断一个书评是否点过赞
 function islike($reviewid,$userid)
 {
